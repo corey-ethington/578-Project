@@ -15,10 +15,13 @@ def setup():
   servo.start(2.5)  # Initialization
 
 def stop():
+  global servo
   servo.stop()
+  GPIO.cleanup()
 
 # sets the servo to rotate to direction
 def setServo(direction):
+  global servo
   if servo == None:
     raise Exception("Must run setup() before calling setServo()")
   else:
