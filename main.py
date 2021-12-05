@@ -1,7 +1,11 @@
 import time
+import RPi.GPIO as GPIO
 import rfid
+import servo
 
 UNLOCK_TIME = 120 # number of seconds that must elapse since the device was unlocked for it to unlock again
+SERVO_LOCK_DIR = 0.25
+SERVO_UNLOCK_DIR = 0.75
 
 currentlyLocked = True
 timeSinceUnlock = None
@@ -19,16 +23,22 @@ def generateHash(rfidData):
 
 # opens the container
 def unlock():
+    global currentlyLocked
     currentlyLocked = False
-    #TODO set servo to unlocked position
+    servo.setServo(SERVO_UNLOCK_DIR)
 
 # seals the container
 def lock():
+    global timeSinceUnlock
+    global currentlyLocked
     currentlyLocked = True
     timeSinceUnlock = time.time()
-    #TODO set servo to locked position
+    servo.setServo(SERVO_LOCK_DIR)
 
 
+def setup():
+    servo.setup()
+    lock()
 
 def mainLoop():
     timeElapsed = time.time() - timeSinceUnlock
@@ -41,9 +51,12 @@ def mainLoop():
             lock()
 
 if __name__ == "__main__":
-    timeSinceUnlock = time.time()
+    setup()
     while True:
         try:
             mainLoop()
         except KeyboardInterrupt:
             print("Exiting: Keyboard Interrupt")
+        finally:
+            servo.stop()
+            GPIO.cleanup()
