@@ -40,6 +40,6 @@ if __name__ == "__main__":
   else:
     print("Setting servo to " + sys.argv[1])
     setup()
-    setServo(int(sys.argv[1]))
+    setServo(float(sys.argv[1]))
     time.sleep(5)
     stop()
