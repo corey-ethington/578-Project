@@ -26,10 +26,10 @@ def setServo(direction):
 
 # use this to test just the read functionality
 if __name__ == "__main__":
-  if len(sys.argv) != 1:
+  if len(sys.argv) != 2:
     print("Usage: servo.py <servoDirection>")
   else:
-    print("Setting servo to " + sys.argv[0])
+    print("Setting servo to " + sys.argv[1])
     setup()
-    setServo(int(sys.argv[0]))
+    setServo(int(sys.argv[1]))
     stop()
