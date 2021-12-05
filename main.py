@@ -1,4 +1,5 @@
 import time
+import hashlib
 import RPi.GPIO as GPIO
 import rfid
 import servo
@@ -17,9 +18,8 @@ def tryReadRfid():
     return rfid.read()
 
 # generates a hash from rfid data
-def generateHash(rfidData):
-    #TODO generate hash
-    return None
+def generateHash(rfidDataString):
+    return hashlib.sha256(bytes(rfidDataString)).hexdigest()
 
 # opens the container
 def unlock():
@@ -44,6 +44,8 @@ def mainLoop():
     timeElapsed = time.time() - timeSinceUnlock
     rfidData = tryReadRfid()
     rfidHash = generateHash(rfidData)
+    if len(knownHashes) == 0: #add the first card read into known cards (this is for debug purposes)
+        knownHashes.append(rfidHash)
     if rfidHash in knownHashes:
         if currentlyLocked and timeElapsed > UNLOCK_TIME:
             unlock()
