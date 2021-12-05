@@ -7,6 +7,7 @@ servo = None
 
 # run this at startup
 def setup():
+  global servo
   GPIO.setmode(GPIO.BCM)
   GPIO.setup(SERVO_PIN, GPIO.OUT)
 
