@@ -3,6 +3,8 @@ import sys
 import RPi.GPIO as GPIO
 
 SERVO_PIN = 17
+DUTY_CYCLE_MIN = 1
+DUTY_CYCLE_MAX = 12
 servo = None
 
 # run this at startup
@@ -19,13 +21,16 @@ def stop():
   servo.stop()
   GPIO.cleanup()
 
-# sets the servo to rotate to direction
+# sets the servo to rotate to direction (direction should be a float between 0 and 1)
 def setServo(direction):
   global servo
   if servo == None:
     raise Exception("Must run setup() before calling setServo()")
+  elif direction < 0 or direction > 1:
+    raise Exception("Direction must be between 0 and 1")
   else:
-    servo.ChangeDutyCycle(direction)
+    dutyCycle = ((DUTY_CYCLE_MAX - DUTY_CYCLE_MIN) * direction) + DUTY_CYCLE_MIN
+    servo.ChangeDutyCycle(dutyCycle)
 
 
 # use this to test just the read functionality
