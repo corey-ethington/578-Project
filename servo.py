@@ -11,12 +11,12 @@ servo = None
 def setup():
   global servo
   GPIO.setmode(GPIO.BCM)
-
-def secondarySetup():
-  global servo
   GPIO.setup(SERVO_PIN, GPIO.OUT)
 
   servo = GPIO.PWM(SERVO_PIN, 50)  # GPIO 17 for PWM with 50Hz
+
+def secondarySetup():
+  global servo
   servo.start(2.5)  # Initialization
 
 def stop():
@@ -35,7 +35,7 @@ def setServo(direction):
   else:
     dutyCycle = ((DUTY_CYCLE_MAX - DUTY_CYCLE_MIN) * direction) + DUTY_CYCLE_MIN
     servo.ChangeDutyCycle(dutyCycle)
-    time.sleep(2.5)
+    time.sleep(5)
     stop()
 
 
