@@ -27,6 +27,7 @@ def unlock():
     global currentlyLocked
     currentlyLocked = False
     servo.setServo(SERVO_UNLOCK_DIR)
+    print("Unlock")
 
 # seals the container
 def lock():
@@ -35,6 +36,7 @@ def lock():
     currentlyLocked = True
     timeSinceUnlock = time.time()
     servo.setServo(SERVO_LOCK_DIR)
+    print("Lock")
 
 
 def setup():
@@ -46,8 +48,10 @@ def mainLoop():
     timeElapsed = time.time() - timeSinceUnlock
     rfidData = tryReadRfid()
     rfidHash = generateHash(rfidData)
+    print(f"Read {rfidHash}")
     if len(knownHashes) == 0: #add the first card read into known cards (this is for debug purposes)
         knownHashes.append(rfidHash)
+        print(f"Added {rfidHash} to known card ids")
     if rfidHash in knownHashes:
         if currentlyLocked and timeElapsed > UNLOCK_TIME:
             unlock()
@@ -56,11 +60,10 @@ def mainLoop():
 
 if __name__ == "__main__":
     setup()
-    while True:
-        try:
-            mainLoop()
-        except KeyboardInterrupt:
-            print("Exiting: Keyboard Interrupt")
-        finally:
-            servo.stop()
-            GPIO.cleanup()
+    try:
+        while True: mainLoop()
+    except KeyboardInterrupt:
+        print("Exiting: Keyboard Interrupt")
+    finally:
+        servo.stop()
+        GPIO.cleanup()
