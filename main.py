@@ -26,6 +26,7 @@ def generateHash(rfidDataString):
 def unlock():
     global currentlyLocked
     currentlyLocked = False
+    servo.secondarySetup()
     print("Unlocking...")
     servo.setServo(SERVO_UNLOCK_DIR)
     print("Unlocked")
