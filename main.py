@@ -4,11 +4,13 @@ import RPi.GPIO as GPIO
 import rfid
 import servo
 
-UNLOCK_TIME = 15 # number of seconds that must elapse since the device was unlocked for it to unlock again
+STAY_CLOSED_TIME = 7 # number of seconds that must elapse since the device was unlocked for it to unlock again
+TIME_UNLOCKED = 5 # amount of time the container will stay unlocked before automatically re-locking
+
+# positioning info for servo
 SERVO_LOCK_DIR = 0.25
 SERVO_UNLOCK_DIR = 0.75
 
-currentlyLocked = True
 timeSinceUnlock = time.time()
 knownHashes = []
 
@@ -22,26 +24,21 @@ def generateHash(rfidDataString):
     # return hashlib.sha256(bytes(rfidDataString)).hexdigest()
     return rfidDataString
 
-# opens the container
-def unlock():
-    global currentlyLocked
-    currentlyLocked = False
-    # servo.secondarySetup()
+
+# unlocks the conatiner, waits for a set amount of time, and re-locks the container
+def unlockLock():
+    global timeSinceUnlock
+
+    # unlock
     print("Unlocking...")
     servo.setServo(SERVO_UNLOCK_DIR)
     print("Unlocked")
     time.sleep(5)
-    lock()
 
-# seals the container
-def lock():
-    global timeSinceUnlock
-    global currentlyLocked
-    currentlyLocked = True
+    # re-lock
     timeSinceUnlock = time.time()
     print("Locking...")
     servo.setServo(SERVO_LOCK_DIR)
-    # servo.stop()
     print("Locked")
 
 
@@ -49,8 +46,6 @@ def setup():
     servo.setup()
     rfid.setup()
     servo.secondarySetup()
-    # lock()
-    # servo.stop()
 
 def mainLoop():
     timeElapsed = time.time() - timeSinceUnlock
@@ -61,11 +56,8 @@ def mainLoop():
         knownHashes.append(rfidHash)
         print(f"Added {rfidHash} to known card ids")
     if rfidHash in knownHashes:
-        if currentlyLocked:
-            if timeElapsed > UNLOCK_TIME: unlock()
-            else: print(f"Time elapsed: {int(timeElapsed)} / {UNLOCK_TIME} seconds")
-        elif not currentlyLocked:
-            lock()
+        if timeElapsed > STAY_CLOSED_TIME: unlockLock()
+        else: print(f"Time elapsed: {int(timeElapsed)} / {STAY_CLOSED_TIME} seconds")
 
 if __name__ == "__main__":
     setup()
