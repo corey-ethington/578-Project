@@ -3,6 +3,7 @@ import hashlib
 import RPi.GPIO as GPIO
 import rfid
 import servo
+import sms
 
 STAY_CLOSED_TIME = 7 # number of seconds that must elapse since the device was unlocked for it to unlock again
 TIME_UNLOCKED = 5 # amount of time the container will stay unlocked before automatically re-locking
