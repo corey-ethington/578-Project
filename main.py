@@ -37,6 +37,7 @@ def lock():
 
 
 def setup():
+    rfid.setup()
     servo.setup()
     lock()
 

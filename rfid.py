@@ -2,6 +2,13 @@ import time
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 
+reader = None
+
+# run this at startup
+def setup():
+	global reader
+	reader = SimpleMFRC522()
+
 # waits until an RFID card can be read by the sensor, and returns the id of the card once it is read
 def read():
 	id, text = reader.read()
