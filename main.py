@@ -55,7 +55,7 @@ def mainLoop():
     if rfidHash in knownHashes:
         if currentlyLocked:
             if timeElapsed > UNLOCK_TIME: unlock()
-            else: print(f"Time elapsed: {timeElapsed} / {UNLOCK_TIME} seconds")
+            else: print(f"Time elapsed: {int(timeElapsed)} / {UNLOCK_TIME} seconds")
         elif not currentlyLocked:
             lock()
 
