@@ -41,4 +41,5 @@ if __name__ == "__main__":
     print("Setting servo to " + sys.argv[1])
     setup()
     setServo(int(sys.argv[1]))
+    time.sleep(5)
     stop()
