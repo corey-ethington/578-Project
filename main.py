@@ -4,7 +4,7 @@ import RPi.GPIO as GPIO
 import rfid
 import servo
 
-UNLOCK_TIME = 120 # number of seconds that must elapse since the device was unlocked for it to unlock again
+UNLOCK_TIME = 15 # number of seconds that must elapse since the device was unlocked for it to unlock again
 SERVO_LOCK_DIR = 0.25
 SERVO_UNLOCK_DIR = 0.75
 
@@ -53,8 +53,9 @@ def mainLoop():
         knownHashes.append(rfidHash)
         print(f"Added {rfidHash} to known card ids")
     if rfidHash in knownHashes:
-        if currentlyLocked and timeElapsed > UNLOCK_TIME:
-            unlock()
+        if currentlyLocked:
+            if timeElapsed > UNLOCK_TIME: unlock()
+            else: print(f"Time elapsed: {timeElapsed} / {UNLOCK_TIME} seconds")
         elif not currentlyLocked:
             lock()
 
