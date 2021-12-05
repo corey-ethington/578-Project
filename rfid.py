@@ -1,3 +1,4 @@
+import time
 import RPi.GPIO as GPIO
 from mfrc522 import SimpleMFRC522
 
@@ -9,6 +10,7 @@ def read():
 
 # use this to test just the read functionality
 if __name__ == "__main__":
+	print("RFID Reader: Will print id of any RFID card read by sensor")
 	reader = SimpleMFRC522()
 	try:
 		while True:
@@ -17,7 +19,8 @@ if __name__ == "__main__":
 				print(f"{id}, {text}")
 			except Exception as e:
 				print(e)
-			finally:
-				GPIO.cleanup()
+			time.sleep(1)
 	except KeyboardInterrupt:
 		print("Terminated")
+	finally:
+		GPIO.cleanup()
