@@ -26,7 +26,7 @@ def generateHash(rfidDataString):
 def unlock():
     global currentlyLocked
     currentlyLocked = False
-    servo.secondarySetup()
+    # servo.secondarySetup()
     print("Unlocking...")
     servo.setServo(SERVO_UNLOCK_DIR)
     print("Unlocked")
@@ -41,13 +41,14 @@ def lock():
     timeSinceUnlock = time.time()
     print("Locking...")
     servo.setServo(SERVO_LOCK_DIR)
-    servo.stop()
+    # servo.stop()
     print("Locked")
 
 
 def setup():
     servo.setup()
     rfid.setup()
+    servo.secondarySetup()
     # lock()
     # servo.stop()
 
