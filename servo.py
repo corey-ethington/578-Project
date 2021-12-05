@@ -14,6 +14,7 @@ def setup():
   GPIO.setup(SERVO_PIN, GPIO.OUT)
 
   servo = GPIO.PWM(SERVO_PIN, 50)  # GPIO 17 for PWM with 50Hz
+  secondarySetup()
 
 def secondarySetup():
   global servo
@@ -27,7 +28,7 @@ def stop():
 # sets the servo to rotate to direction (direction should be a float between 0 and 1)
 def setServo(direction):
   global servo
-  secondarySetup()
+  # secondarySetup()
   if servo == None:
     raise Exception("Must run setup() before calling setServo()")
   elif direction < 0 or direction > 1:
@@ -35,8 +36,8 @@ def setServo(direction):
   else:
     dutyCycle = ((DUTY_CYCLE_MAX - DUTY_CYCLE_MIN) * direction) + DUTY_CYCLE_MIN
     servo.ChangeDutyCycle(dutyCycle)
-    time.sleep(5)
-    stop()
+    time.sleep(2.5)
+    #stop()
 
 
 # use this to test just the read functionality

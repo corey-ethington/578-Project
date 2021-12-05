@@ -26,8 +26,11 @@ def generateHash(rfidDataString):
 def unlock():
     global currentlyLocked
     currentlyLocked = False
+    print("Unlocking...")
     servo.setServo(SERVO_UNLOCK_DIR)
-    print("Unlock")
+    print("Unlocked")
+    time.sleep(5)
+    lock()
 
 # seals the container
 def lock():
@@ -35,14 +38,17 @@ def lock():
     global currentlyLocked
     currentlyLocked = True
     timeSinceUnlock = time.time()
+    print("Locking...")
     servo.setServo(SERVO_LOCK_DIR)
-    print("Lock")
+    servo.stop()
+    print("Locked")
 
 
 def setup():
     servo.setup()
     rfid.setup()
-    lock()
+    # lock()
+    # servo.stop()
 
 def mainLoop():
     timeElapsed = time.time() - timeSinceUnlock
