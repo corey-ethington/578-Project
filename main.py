@@ -19,7 +19,8 @@ def tryReadRfid():
 
 # generates a hash from rfid data
 def generateHash(rfidDataString):
-    return hashlib.sha256(bytes(rfidDataString)).hexdigest()
+    # return hashlib.sha256(bytes(rfidDataString)).hexdigest()
+    return rfidDataString
 
 # opens the container
 def unlock():
@@ -37,8 +38,8 @@ def lock():
 
 
 def setup():
-    rfid.setup()
     servo.setup()
+    rfid.setup()
     lock()
 
 def mainLoop():
