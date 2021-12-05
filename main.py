@@ -9,7 +9,7 @@ SERVO_LOCK_DIR = 0.25
 SERVO_UNLOCK_DIR = 0.75
 
 currentlyLocked = True
-timeSinceUnlock = None
+timeSinceUnlock = time.time()
 knownHashes = []
 
 
