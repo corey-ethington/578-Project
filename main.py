@@ -74,7 +74,7 @@ def setup():
     checkTimeProcess.start()
 
 def mainLoop():
-    rfidData = tryReadRfid()
+    rfidData = str(tryReadRfid())
     timeElapsed = time.time() - timeSinceUnlock
     print(f"Read {rfidData}")
     if len(idHashStorage.validHashes) == 0: #add the first card read into known cards (this is for debug purposes)
