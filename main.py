@@ -7,7 +7,7 @@ import servo
 import sms
 
 STAY_CLOSED_TIME = 15 # number of seconds that must elapse since the device was unlocked for it to unlock again
-TIME_UNLOCKED = 5 # amount of time the container will stay unlocked before automatically re-locking
+TIME_UNLOCKED = 10 # amount of time the container will stay unlocked before automatically re-locking
 
 # positioning info for servo
 SERVO_LOCK_DIR = 0.25
@@ -34,7 +34,7 @@ def checkTimeElapsed(lastTime, didSendMessage):
     try:
         while True:
             timeElapsed = int(time.time()) - lastTime.value
-            #print(f"T: {timeElapsed}")
+            print(f"T: {timeElapsed}")
             if timeElapsed >= SMS_REMINDER_TIME and not didSendMessage.value:
                 sms.sendMessage("Did you forget to take your medicine?")
                 didSendMessage.value = True
@@ -62,7 +62,7 @@ def unlockLock():
     print("Unlocking...")
     servo.setServo(SERVO_UNLOCK_DIR)
     print("Unlocked")
-    time.sleep(5)
+    time.sleep(TIME_UNLOCKED)
 
     # re-lock
     print("Locking...")
