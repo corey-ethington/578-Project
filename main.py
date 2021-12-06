@@ -19,10 +19,13 @@ knownHashes = []
 
 # checks the time elapsed, and sends an SMS message if necessary (this is meant to run in a separate thread)
 def checkTimeElapsed(lastTime):
-    while True:
-        timeElapsed = time.time() - lastTime
-        print(f"T: {timeElapsed}")
-        time.sleep(5)
+    try:
+        while True:
+            timeElapsed = time.time() - lastTime.value
+            print(f"T: {timeElapsed}")
+            time.sleep(5)
+    except KeyboardInterrupt:
+        pass
 
 # returns RFID code if read is successful, otherwise returns None
 def tryReadRfid():
