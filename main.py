@@ -13,7 +13,7 @@ TIME_UNLOCKED = 5 # amount of time the container will stay unlocked before autom
 SERVO_LOCK_DIR = 0.25
 SERVO_UNLOCK_DIR = 0.75
 
-timeSinceUnlock = multiprocessing.Value(time.time())
+timeSinceUnlock = multiprocessing.Value('f', time.time())
 knownHashes = []
 
 
