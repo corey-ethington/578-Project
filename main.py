@@ -26,7 +26,7 @@ def loadKnownHashes():
     with open(FILEPATH, newline = '') as file:
         reader = csv.reader(file)
         data = list(reader)
-        print(data)
+        print(data[0])
 
 # sets the time last unlocked
 def setLastUnlockTime():
