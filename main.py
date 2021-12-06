@@ -60,7 +60,7 @@ def setup():
     checkTimeProcess.start()
 
 def mainLoop():
-    timeElapsed = time.time() - timeSinceUnlock
+    timeElapsed = time.time() - timeSinceUnlock.value
     rfidData = tryReadRfid()
     rfidHash = generateHash(rfidData)
     print(f"Read {rfidHash}")
