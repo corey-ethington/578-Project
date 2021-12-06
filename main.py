@@ -77,10 +77,10 @@ def mainLoop():
     rfidData = str(tryReadRfid())
     timeElapsed = time.time() - timeSinceUnlock
     print(f"Read {rfidData}")
-    if len(idHashStorage.validHashes) == 0: #add the first card read into known cards (this is for debug purposes)
-        idHashStorage.setStringKnown(rfidData)
-        print(f"Added {rfidData} to known card ids")
-    elif idHashStorage.getStringKnown(rfidData):
+    # if len(idHashStorage.validHashes) == 0: #add the first card read into known cards (this is for debug purposes)
+    #     idHashStorage.setStringKnown(rfidData)
+    #     print(f"Added {rfidData} to known card ids")
+    if idHashStorage.getStringKnown(rfidData):
         if timeElapsed > STAY_CLOSED_TIME: unlockLock()
         else: print(f"Time elapsed: {int(timeElapsed)} / {STAY_CLOSED_TIME} seconds")
 
