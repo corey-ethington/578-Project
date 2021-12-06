@@ -7,6 +7,8 @@ import servo
 import sms
 import idHashStorage
 
+FILEPATH = "knownHashes.csv"
+
 STAY_CLOSED_TIME = 15 # number of seconds that must elapse since the device was unlocked for it to unlock again
 TIME_UNLOCKED = 10 # amount of time the container will stay unlocked before automatically re-locking
 
@@ -21,7 +23,7 @@ didSendMessageThread = multiprocessing.Value('b', False)
 
 # loads known rfid hashes
 def loadKnownHashes():
-    with open('file.csv', newline = '') as file:
+    with open(FILEPATH, newline = '') as file:
         reader = csv.reader(file)
         data = list(reader)
         print(data)
