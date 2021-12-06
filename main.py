@@ -6,7 +6,7 @@ import rfid
 import servo
 import sms
 
-STAY_CLOSED_TIME = 7 # number of seconds that must elapse since the device was unlocked for it to unlock again
+STAY_CLOSED_TIME = 15 # number of seconds that must elapse since the device was unlocked for it to unlock again
 TIME_UNLOCKED = 5 # amount of time the container will stay unlocked before automatically re-locking
 
 # positioning info for servo
@@ -29,7 +29,7 @@ def checkTimeElapsed(lastTime):
         while True:
             timeElapsed = int(time.time()) - lastTime.value
             print(f"T: {timeElapsed}")
-            time.sleep(5)
+            time.sleep(1)
     except KeyboardInterrupt:
         pass
 
@@ -54,10 +54,11 @@ def unlockLock():
     time.sleep(5)
 
     # re-lock
-    setLastUnlockTime()
     print("Locking...")
     servo.setServo(SERVO_LOCK_DIR)
     print("Locked")
+    setLastUnlockTime()
+
 
 
 def setup():
