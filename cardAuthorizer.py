@@ -1,13 +1,15 @@
-import json
+import os
 import RPi.GPIO as GPIO
 import idHashStorage
 import rfid
 
+FILEPATH = "knownHashes.csv"
+
 # appends the list of valid id's to the file 'knownHashes.csv'
 def writeToFile(idsList):
     if len(idsList) > 0:
-        file = open("knownHashes.csv", "a")
-        fileEmpty = len(file.read()) == 0
+        fileEmpty = (not os.path.exists(FILEPATH)) or os.stat(FILEPATH).st_size == 0
+        file = open(FILEPATH, "a")
         stringToAppend = ""
         if not fileEmpty: stringToAppend += ","
         for i in range(0, len(idsList)):
