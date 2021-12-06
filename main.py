@@ -34,7 +34,7 @@ def checkTimeElapsed(lastTime, didSendMessage):
     try:
         while True:
             timeElapsed = int(time.time()) - lastTime.value
-            print(f"T: {timeElapsed}")
+            #print(f"T: {timeElapsed}")
             if timeElapsed >= SMS_REMINDER_TIME and not didSendMessage.value:
                 sms.sendMessage("Did you forget to take your medicine?")
                 didSendMessage.value = True
@@ -82,8 +82,8 @@ def setup():
     checkTimeProcess.start()
 
 def mainLoop():
-    timeElapsed = time.time() - timeSinceUnlock
     rfidData = tryReadRfid()
+    timeElapsed = time.time() - timeSinceUnlock
     rfidHash = generateHash(rfidData)
     print(f"Read {rfidHash}")
     if len(knownHashes) == 0: #add the first card read into known cards (this is for debug purposes)
