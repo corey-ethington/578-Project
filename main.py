@@ -1,5 +1,6 @@
 import time
 import multiprocessing
+import csv
 import RPi.GPIO as GPIO
 import rfid
 import servo
@@ -17,6 +18,13 @@ timeSinceUnlock = time.time()
 timeSinceUnlockThreadInt = multiprocessing.Value('i', int(time.time()))
 didSendMessageThread = multiprocessing.Value('b', False)
 
+
+# loads known rfid hashes
+def loadKnownHashes():
+    with open('file.csv', newline = '') as file:
+        reader = csv.reader(file)
+        data = list(reader)
+        print(data)
 
 # sets the time last unlocked
 def setLastUnlockTime():
@@ -69,6 +77,7 @@ def setup():
     servo.setup()
     rfid.setup()
     servo.secondarySetup()
+    loadKnownHashes()
 
     checkTimeProcess = multiprocessing.Process(target = checkTimeElapsed, args = (timeSinceUnlockThreadInt, didSendMessageThread))
     checkTimeProcess.start()
