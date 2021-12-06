@@ -15,6 +15,7 @@ SERVO_UNLOCK_DIR = 0.75
 
 timeSinceUnlock = time.time()
 timeSinceUnlockThreadInt = multiprocessing.Value('i', int(time.time()))
+didSendMessageThread = multiprocessing.Value('b', False)
 knownHashes = []
 
 
@@ -22,15 +23,21 @@ knownHashes = []
 def setLastUnlockTime():
     global  timeSinceUnlock
     global timeSinceUnlockThreadInt
+    global didSendMessageThread
     timeSinceUnlock = time.time()
     timeSinceUnlockThreadInt.value = int(timeSinceUnlock)
+    didSendMessageThread.value = False
 
 # checks the time elapsed, and sends an SMS message if necessary (this is meant to run in a separate thread)
-def checkTimeElapsed(lastTime):
+def checkTimeElapsed(lastTime, didSendMessage):
+    SMS_REMINDER_TIME = 20 # will send SMS reminder if this many seconds elapse since the container was last unlocked
     try:
         while True:
             timeElapsed = int(time.time()) - lastTime.value
             print(f"T: {timeElapsed}")
+            if timeElapsed > SMS_REMINDER_TIME and not didSendMessage.value:
+                sms.sendMessage("Not unlocked within time window!")
+                didSendMessage.value = True
             time.sleep(1)
     except KeyboardInterrupt:
         pass
@@ -68,7 +75,7 @@ def setup():
     rfid.setup()
     servo.secondarySetup()
 
-    checkTimeProcess = multiprocessing.Process(target = checkTimeElapsed, args = (timeSinceUnlockThreadInt,))
+    checkTimeProcess = multiprocessing.Process(target = checkTimeElapsed, args = (timeSinceUnlockThreadInt, didSendMessageThread))
     checkTimeProcess.start()
 
 def mainLoop():
