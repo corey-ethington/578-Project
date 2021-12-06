@@ -13,15 +13,21 @@ TIME_UNLOCKED = 5 # amount of time the container will stay unlocked before autom
 SERVO_LOCK_DIR = 0.25
 SERVO_UNLOCK_DIR = 0.75
 
-timeSinceUnlock = multiprocessing.Value('f', time.time())
+timeSinceUnlock = time.time()
+timeSinceUnlockThreadInt = multiprocessing.Value('i', time.time())
 knownHashes = []
 
+
+# sets the time last unlocked
+def setLastUnlockTime():
+    timeSinceUnlock = time.time()
+    timeSinceUnlockThreadInt.value = int(timeSinceUnlock)
 
 # checks the time elapsed, and sends an SMS message if necessary (this is meant to run in a separate thread)
 def checkTimeElapsed(lastTime):
     try:
         while True:
-            timeElapsed = time.time() - lastTime.value
+            timeElapsed = int(time.time()) - lastTime.value
             print(f"T: {timeElapsed}")
             time.sleep(5)
     except KeyboardInterrupt:
@@ -48,7 +54,7 @@ def unlockLock():
     time.sleep(5)
 
     # re-lock
-    timeSinceUnlock.value = time.time()
+    setLastUnlockTime()
     print("Locking...")
     servo.setServo(SERVO_LOCK_DIR)
     print("Locked")
@@ -59,11 +65,11 @@ def setup():
     rfid.setup()
     servo.secondarySetup()
 
-    checkTimeProcess = multiprocessing.Process(target = checkTimeElapsed, args = (timeSinceUnlock,))
+    checkTimeProcess = multiprocessing.Process(target = checkTimeElapsed, args = (timeSinceUnlockThreadInt,))
     checkTimeProcess.start()
 
 def mainLoop():
-    timeElapsed = time.time() - timeSinceUnlock.value
+    timeElapsed = time.time() - timeSinceUnlock
     rfidData = tryReadRfid()
     rfidHash = generateHash(rfidData)
     print(f"Read {rfidHash}")
