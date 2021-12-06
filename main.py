@@ -1,10 +1,13 @@
 import time
 import multiprocessing
+import csv
 import RPi.GPIO as GPIO
 import rfid
 import servo
 import sms
 import idHashStorage
+
+FILEPATH = "knownHashes.csv"
 
 STAY_CLOSED_TIME = 15 # number of seconds that must elapse since the device was unlocked for it to unlock again
 TIME_UNLOCKED = 10 # amount of time the container will stay unlocked before automatically re-locking
@@ -17,6 +20,13 @@ timeSinceUnlock = time.time()
 timeSinceUnlockThreadInt = multiprocessing.Value('i', int(time.time()))
 didSendMessageThread = multiprocessing.Value('b', False)
 
+
+# loads known rfid hashes
+def loadKnownHashes():
+    with open(FILEPATH, newline = '') as file:
+        reader = csv.reader(file)
+        data = list(reader)
+        idHashStorage.validHashes = data[0]
 
 # sets the time last unlocked
 def setLastUnlockTime():
@@ -69,6 +79,7 @@ def setup():
     servo.setup()
     rfid.setup()
     servo.secondarySetup()
+    loadKnownHashes()
 
     checkTimeProcess = multiprocessing.Process(target = checkTimeElapsed, args = (timeSinceUnlockThreadInt, didSendMessageThread))
     checkTimeProcess.start()
@@ -77,10 +88,10 @@ def mainLoop():
     rfidData = str(tryReadRfid())
     timeElapsed = time.time() - timeSinceUnlock
     print(f"Read {rfidData}")
-    if len(idHashStorage.validHashes) == 0: #add the first card read into known cards (this is for debug purposes)
-        idHashStorage.setStringKnown(rfidData)
-        print(f"Added {rfidData} to known card ids")
-    elif idHashStorage.getStringKnown(rfidData):
+    # if len(idHashStorage.validHashes) == 0: #add the first card read into known cards (this is for debug purposes)
+    #     idHashStorage.setStringKnown(rfidData)
+    #     print(f"Added {rfidData} to known card ids")
+    if idHashStorage.getStringKnown(rfidData):
         if timeElapsed > STAY_CLOSED_TIME: unlockLock()
         else: print(f"Time elapsed: {int(timeElapsed)} / {STAY_CLOSED_TIME} seconds")
 
