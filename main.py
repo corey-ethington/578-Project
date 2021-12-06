@@ -20,6 +20,8 @@ knownHashes = []
 
 # sets the time last unlocked
 def setLastUnlockTime():
+    global  timeSinceUnlock
+    global timeSinceUnlockThreadInt
     timeSinceUnlock = time.time()
     timeSinceUnlockThreadInt.value = int(timeSinceUnlock)
 
