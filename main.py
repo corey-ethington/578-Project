@@ -58,6 +58,7 @@ def tryReadRfid():
 # unlocks the container, waits for a set amount of time, and re-locks the container
 def unlockLock():
     global timeSinceUnlock
+    servo.secondarySetup()
 
     setLastUnlockTime() # do this now so user doesn't get a reminder message while they're in the unlock process
 
@@ -71,6 +72,8 @@ def unlockLock():
     print("Locking...")
     servo.setServo(SERVO_LOCK_DIR)
     print("Locked")
+
+    servo.stop()
 
     setLastUnlockTime() # do this again so that the last unlock time is in sync with the time when we know the box was fully back in the locked position
 
