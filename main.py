@@ -34,9 +34,9 @@ def checkTimeElapsed(lastTime, didSendMessage):
     try:
         while True:
             timeElapsed = int(time.time()) - lastTime.value
-            print(f"T: {timeElapsed}")
-            if timeElapsed > SMS_REMINDER_TIME and not didSendMessage.value:
-                sms.sendMessage("Not unlocked within time window!")
+            #print(f"T: {timeElapsed}")
+            if timeElapsed >= SMS_REMINDER_TIME and not didSendMessage.value:
+                sms.sendMessage("Did you forget to take your medicine?")
                 didSendMessage.value = True
             time.sleep(1)
     except KeyboardInterrupt:
@@ -56,6 +56,8 @@ def generateHash(rfidDataString):
 def unlockLock():
     global timeSinceUnlock
 
+    setLastUnlockTime() # do this now so user doesn't get a reminder message while they're in the unlock process
+
     # unlock
     print("Unlocking...")
     servo.setServo(SERVO_UNLOCK_DIR)
@@ -66,7 +68,8 @@ def unlockLock():
     print("Locking...")
     servo.setServo(SERVO_LOCK_DIR)
     print("Locked")
-    setLastUnlockTime()
+
+    setLastUnlockTime() # do this again so that the last unlock time is in sync with the time when we know the box was fully back in the locked position
 
 
 
