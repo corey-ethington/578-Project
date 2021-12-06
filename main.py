@@ -56,7 +56,7 @@ def setup():
     rfid.setup()
     servo.secondarySetup()
 
-    checkTimeProcess = multiprocessing.Process(target = checkTimeElapsed, args = timeSinceUnlock)
+    checkTimeProcess = multiprocessing.Process(target = checkTimeElapsed, args = (timeSinceUnlock,))
     checkTimeProcess.start()
 
 def mainLoop():
