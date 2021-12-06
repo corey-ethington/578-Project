@@ -1,10 +1,10 @@
 import time
-import hashlib
 import multiprocessing
 import RPi.GPIO as GPIO
 import rfid
 import servo
 import sms
+import idHashStorage
 
 STAY_CLOSED_TIME = 15 # number of seconds that must elapse since the device was unlocked for it to unlock again
 TIME_UNLOCKED = 10 # amount of time the container will stay unlocked before automatically re-locking
@@ -16,7 +16,6 @@ SERVO_UNLOCK_DIR = 0.75
 timeSinceUnlock = time.time()
 timeSinceUnlockThreadInt = multiprocessing.Value('i', int(time.time()))
 didSendMessageThread = multiprocessing.Value('b', False)
-knownHashes = []
 
 
 # sets the time last unlocked
@@ -46,12 +45,6 @@ def checkTimeElapsed(lastTime, didSendMessage):
 def tryReadRfid():
     return rfid.read()
 
-# generates a hash from rfid data
-def generateHash(rfidDataString):
-    # return hashlib.sha256(bytes(rfidDataString)).hexdigest()
-    return rfidDataString
-
-
 # unlocks the container, waits for a set amount of time, and re-locks the container
 def unlockLock():
     global timeSinceUnlock
@@ -72,7 +65,6 @@ def unlockLock():
     setLastUnlockTime() # do this again so that the last unlock time is in sync with the time when we know the box was fully back in the locked position
 
 
-
 def setup():
     servo.setup()
     rfid.setup()
@@ -84,12 +76,11 @@ def setup():
 def mainLoop():
     rfidData = tryReadRfid()
     timeElapsed = time.time() - timeSinceUnlock
-    rfidHash = generateHash(rfidData)
-    print(f"Read {rfidHash}")
-    if len(knownHashes) == 0: #add the first card read into known cards (this is for debug purposes)
-        knownHashes.append(rfidHash)
-        print(f"Added {rfidHash} to known card ids")
-    if rfidHash in knownHashes:
+    print(f"Read {rfidData}")
+    if len(idHashStorage.validHashes) == 0: #add the first card read into known cards (this is for debug purposes)
+        idHashStorage.setStringKnown(rfidData)
+        print(f"Added {rfidData} to known card ids")
+    elif idHashStorage.getStringKnown(rfidData):
         if timeElapsed > STAY_CLOSED_TIME: unlockLock()
         else: print(f"Time elapsed: {int(timeElapsed)} / {STAY_CLOSED_TIME} seconds")
 

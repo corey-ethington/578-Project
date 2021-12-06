@@ -9,7 +9,6 @@ DEST_PHONE_NUMBER = "+19165915940"
 
 # run this at startup
 def setup():
-    #TODO
     pass
 
 
