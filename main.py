@@ -14,7 +14,7 @@ SERVO_LOCK_DIR = 0.25
 SERVO_UNLOCK_DIR = 0.75
 
 timeSinceUnlock = time.time()
-timeSinceUnlockThreadInt = multiprocessing.Value('i', time.time())
+timeSinceUnlockThreadInt = multiprocessing.Value('i', int(time.time()))
 knownHashes = []
 
 
